@@ -406,7 +406,7 @@ footer{
     <input type="email" id="cta-email" name="email" placeholder="your@email.com" required>
     <button type="submit">Get early access</button>
   </form>
-  <div class="cta-success" id="cta-success">You're on the list. We'll be in touch.</div>
+  <div class="cta-success" id="cta-success">You're on the list — see you in the lineup.</div>
 </section>
 
 <!-- FOOTER -->
@@ -430,31 +430,41 @@ document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 // Forms
 const FORMSPREE_URL='https://formspree.io/f/xgawweqp';
 
-function heroSubmit(event){
+async function heroSubmit(event){
   event.preventDefault();
   const v=document.getElementById('hero-email').value;
   if(!v||!v.includes('@'))return false;
-  fetch(FORMSPREE_URL,{
-    method:'POST',
-    headers:{'Accept':'application/json'},
-    body:new FormData(document.getElementById('hero-form'))
-  });
-  document.getElementById('hero-form').style.display='none';
-  document.getElementById('hero-note').style.display='none';
-  document.getElementById('hero-success').style.display='block';
+  try{
+    const res=await fetch(FORMSPREE_URL,{
+      method:'POST',
+      headers:{'Accept':'application/json'},
+      body:new FormData(document.getElementById('hero-form'))
+    });
+    if(!res.ok)throw new Error('Formspree submission failed');
+    document.getElementById('hero-form').style.display='none';
+    document.getElementById('hero-note').style.display='none';
+    document.getElementById('hero-success').style.display='block';
+  }catch(err){
+    console.error(err);
+  }
   return false;
 }
-function ctaSubmit(event){
+async function ctaSubmit(event){
   event.preventDefault();
   const v=document.getElementById('cta-email').value;
   if(!v||!v.includes('@'))return false;
-  fetch(FORMSPREE_URL,{
-    method:'POST',
-    headers:{'Accept':'application/json'},
-    body:new FormData(document.getElementById('cta-form'))
-  });
-  document.getElementById('cta-form').style.display='none';
-  document.getElementById('cta-success').style.display='block';
+  try{
+    const res=await fetch(FORMSPREE_URL,{
+      method:'POST',
+      headers:{'Accept':'application/json'},
+      body:new FormData(document.getElementById('cta-form'))
+    });
+    if(!res.ok)throw new Error('Formspree submission failed');
+    document.getElementById('cta-form').style.display='none';
+    document.getElementById('cta-success').style.display='block';
+  }catch(err){
+    console.error(err);
+  }
   return false;
 }
 </script>
