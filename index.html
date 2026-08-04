@@ -311,10 +311,10 @@ footer{
       Built by lifeguards at <strong>Stand 108, Atlantic Avenue Beach</strong> — people who live in the water and got tired of tools that don't. Three functions. One object. No excuses.
     </p>
     <div class="email-wrap">
-      <div class="email-form">
-        <input type="email" id="hero-email" placeholder="your@email.com">
-        <button onclick="heroSubmit()">Get early access</button>
-      </div>
+      <form class="email-form" id="hero-form" onsubmit="return heroSubmit(event)">
+        <input type="email" id="hero-email" name="email" placeholder="your@email.com" required>
+        <button type="submit">Get early access</button>
+      </form>
       <div class="form-note" id="hero-note">First to know when we launch. No spam, ever.</div>
       <div class="success-msg" id="hero-success">You're on the list — see you in the lineup.</div>
     </div>
@@ -402,10 +402,10 @@ footer{
 <section class="cta-band">
   <h2>Be first<br>in the <em>lineup.</em></h2>
   <p class="cta-sub">Drop your email. First wave gets early access and founding pricing.</p>
-  <div class="cta-form">
-    <input type="email" id="cta-email" placeholder="your@email.com">
-    <button onclick="ctaSubmit()">Get early access</button>
-  </div>
+  <form class="cta-form" id="cta-form" onsubmit="return ctaSubmit(event)">
+    <input type="email" id="cta-email" name="email" placeholder="your@email.com" required>
+    <button type="submit">Get early access</button>
+  </form>
   <div class="cta-success" id="cta-success">You're on the list. We'll be in touch.</div>
 </section>
 
@@ -428,18 +428,34 @@ const observer=new IntersectionObserver((entries)=>{
 document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
 // Forms
-function heroSubmit(){
+const FORMSPREE_URL='https://formspree.io/f/xgawweqp';
+
+function heroSubmit(event){
+  event.preventDefault();
   const v=document.getElementById('hero-email').value;
-  if(!v||!v.includes('@'))return;
-  document.querySelector('.email-form').style.display='none';
+  if(!v||!v.includes('@'))return false;
+  fetch(FORMSPREE_URL,{
+    method:'POST',
+    headers:{'Accept':'application/json'},
+    body:new FormData(document.getElementById('hero-form'))
+  });
+  document.getElementById('hero-form').style.display='none';
   document.getElementById('hero-note').style.display='none';
   document.getElementById('hero-success').style.display='block';
+  return false;
 }
-function ctaSubmit(){
+function ctaSubmit(event){
+  event.preventDefault();
   const v=document.getElementById('cta-email').value;
-  if(!v||!v.includes('@'))return;
-  document.querySelector('.cta-form').style.display='none';
+  if(!v||!v.includes('@'))return false;
+  fetch(FORMSPREE_URL,{
+    method:'POST',
+    headers:{'Accept':'application/json'},
+    body:new FormData(document.getElementById('cta-form'))
+  });
+  document.getElementById('cta-form').style.display='none';
   document.getElementById('cta-success').style.display='block';
+  return false;
 }
 </script>
 
